@@ -18,46 +18,40 @@ var PORT = process.env.PORT || 3000;
 //Initialize Express
 var app = express();
 
-//Use morgan logger for logging requests
+
+
+// // Set mongoose to leverage built in JavaScript ES6 Promises
+// // Connect to the Mongo DB
+// mongoose.Promise = Promise;
+// mongoose.connect( process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines", 
+    
+// );
+
+
+// Use morgan logger for logging requests
 app.use(logger("dev"));
 // Use body-parser for handling form submissions
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 // Use express.static to serve the public folder as a static directory
 app.use(express.static("public"));
-// app.use(bodyParser.text());
-// app.use(bodyParser.json());
 
-// Set mongoose to leverage built in JavaScript ES6 Promises
 // Connect to the Mongo DB
-mongoose.Promise = Promise;
-mongoose.connect( process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines", 
-    
-);
+mongoose.connect("mongodb://localhost/mongoHeadlines");
 
-// //Mongoose - success message upon database connection
-// var mdb = mongoose.connection;
-// mdb.on('error', console.error.bind(console, 'connection error:'));
-// mdb.once('open', function() {
-//     console.log("DB is running on local host")
-// });
+// Routes
 
-// app.set('views', path.join(__dirname, 'views'));
-// app.engine("handlebars", hbars({defaultLayout: "main"}));
-// app.set("view engine", "handlebars");
+// A GET route for scraping the echoJS website
+app.get("/scrape", function(req, res) {
+  // First, we grab the body of the html with request
+  axios.get("http://www.echojs.com/").then(function(response) {
+    // Then, we load that into cheerio and save it to $ for a shorthand selector
+    var $ = cheerio.load(response.data);
 
-//Routes
+    // Now, we grab every h2 within an article tag, and do the following:
+    $("article h2").each(function(i, element) {
+      // Save an empty result object
+      var result = {};
 
-//A GET route for scraping the website
-app.get("/scrape", function(req, res){
-    //First, we grab the body of the HTML with request
-    axios.get("http://www.echojs.com/").then(function (response){
-        //Then, we load that into cheerio and save it to $ for a shorthand selector
-        var $ = cheerio.load(response.data);
-        //Now, we grab every article by class within an article tag, and do the following:
-        $("article h2").each(function(i, element) {
-            //Save an empty result object
-
-            var result = {};
       // Add the text and href of every link, and save them as properties of the result object
       result.title = $(this)
         .children("a")
@@ -66,25 +60,20 @@ app.get("/scrape", function(req, res){
         .children("a")
         .attr("href");
 
-        console.log(result); 
       // Create a new Article using the `result` object built from scraping
       db.Article.create(result)
         .then(function(dbArticle) {
           // View the added result in the console
           console.log(dbArticle);
-          res.redirect("/")
-         
         })
         .catch(function(err) {
-          console.log(err);
-          res.send("errors or duplicates");
           // If an error occurred, send it to the client
-          // return res.json(err);
+          return res.json(err);
         });
     });
 
     // If we were able to successfully scrape and save an Article, send a message to the client
-    
+    res.send("Scrape Complete");
   });
 });
 
