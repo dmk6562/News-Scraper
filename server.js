@@ -13,25 +13,11 @@ var request = require("request");
 
 var Note = require("./models/Note");
 var Article = require("./models/Article");
-var databaseUrl = 'mongodb://localhost/nyt';
 
-if (process.env.MONGODB_URI) {
-	mongoose.connect(process.env.MONGODB_URI);
-}
-else {
-	mongoose.connect(databaseUrl);
-};
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
 
 mongoose.Promise = Promise;
-var db = mongoose.connection;
-
-db.on("error", function(error) {
-	console.log("Mongoose Error: ", error);
-});
-
-db.once("open", function() {
-	console.log("Mongoose connection successful.");
-});
+mongoose.connect(MONGODB_URI);
 
 
 var app = express();
