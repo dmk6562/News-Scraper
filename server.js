@@ -28,7 +28,7 @@ else {
 	mongoose.connect("mongodb://localhost/mongoHeadlines");
 };
 
-mongoose.Promise = Promise;
+// mongoose.Promise = Promise;
 var db = mongoose.connection;
 
 db.on("error", function(error) {
