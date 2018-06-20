@@ -11,7 +11,7 @@ var request = require("request");
 
 // Mongoose
 
-var Note = require("./models/Note");
+// var Note = require("./models/Note");
 var Article = require("./models/Article");
 
 // var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
