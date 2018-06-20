@@ -19,8 +19,8 @@ var app = express();
 var port = process.env.PORT || 3000;
 
 
-var MONGODB_URI = process.env.MONGODB_URI || "mongodb://heroku_g7hs7ps3:Selobo89@ds163680.mlab.com:63680/heroku_g7hs7ps3";
-// var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/test";
+// var MONGODB_URI = process.env.MONGODB_URI || "mongodb://heroku_g7hs7ps3:Selobo89@ds163680.mlab.com:63680/heroku_g7hs7ps3";
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/test";
 
 mongoose.Promise = Promise;
 mongoose.connect(MONGODB_URI, {
