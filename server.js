@@ -11,8 +11,9 @@ var request = require("request");
 
 // Mongoose
 
-var Note = require("./models/Note");
-var Article = require("./models/Article");
+// var Note = require("./models/Note");
+// var Article = require("./models/Article");
+var db = require("./models");
 
 var app = express();
 var port = process.env.PORT || 3000;
@@ -52,7 +53,7 @@ app.set("view engine", "handlebars");
 // Routes
 
 app.get("/", function(req, res) {
-	Article.find({}, null, {sort: {created: -1}}, function(err, data) {
+	db.Article.find({}, null, {sort: {created: -1}}, function(err, data) {
 		if(data.length === 0) {
 			res.render("placeholder", {message: "There's nothing scraped yet. Please click \"Scrape For Newest Articles\" for fresh and delicious news."});
 		}
@@ -97,7 +98,7 @@ app.get("/scrape", function(req, res) {
 });
 
 app.get("/saved", function(req, res) {
-	Article.find({issaved: true}, null, {sort: {created: -1}}, function(err, data) {
+	db.Article.find({issaved: true}, null, {sort: {created: -1}}, function(err, data) {
 		if(data.length === 0) {
 			res.render("placeholder", {message: "You have not saved any articles yet. Try to save some delicious news by simply clicking \"Save Article\"!"});
 		}
@@ -108,14 +109,14 @@ app.get("/saved", function(req, res) {
 });
 
 app.get("/:id", function(req, res) {
-	Article.findById(req.params.id, function(err, data) {
+	db.Article.findById(req.params.id, function(err, data) {
 		res.json(data);
 	})
 })
 
 app.post("/search", function(req, res) {
 	console.log(req.body.search);
-	Article.find({$text: {$search: req.body.search, $caseSensitive: false}}, null, {sort: {created: -1}}, function(err, data) {
+	db.Article.find({$text: {$search: req.body.search, $caseSensitive: false}}, null, {sort: {created: -1}}, function(err, data) {
 		console.log(data);
 		if (data.length === 0) {
 			res.render("placeholder", {message: "Nothing has been found. Please try other keywords."});
@@ -127,7 +128,7 @@ app.post("/search", function(req, res) {
 });
 
 app.post("/save/:id", function(req, res) {
-	Article.findById(req.params.id, function(err, data) {
+	db.Article.findById(req.params.id, function(err, data) {
 		if (data.issaved) {
 			Article.findByIdAndUpdate(req.params.id, {$set: {issaved: false, status: "Save Article"}}, {new: true}, function(err, data) {
 				res.redirect("/");
