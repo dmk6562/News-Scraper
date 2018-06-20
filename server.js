@@ -11,27 +11,14 @@ var request = require("request");
 
 // Mongoose
 
-// var Note = require("./models/Note");
-var Article = require("./models/Article");
+var Note = require("./models");
+var Article = require("./models");
 
-// var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
-
-
-// mongoose.Promise = Promise;
-// mongoose.connect(MONGODB_URI);
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://heroku_g7hs7ps3:Selobo89@ds163680.mlab.com:63680/heroku_g7hs7ps3";
 // var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/test";
 
 mongoose.connect( MONGODB_URI);
 
-// if (process.env.MONGODB_URI) {
-// 	mongoose.connect( MONGODB_URI);
-// }
-// else {
-// 	mongoose.connect("mongodb://localhost/mongoHeadlines");
-// };
-
-// mongoose.Promise = Promise;
 var db = mongoose.connection;
 
 db.on("error", function(error) {
