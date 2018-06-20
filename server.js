@@ -11,27 +11,33 @@ var request = require("request");
 
 // Mongoose
 
-var Note = require("./models");
-var Article = require("./models");
+var Note = require("./models/Note");
+var Article = require("./models/Article");
+
+var app = express();
+var port = process.env.PORT || 3000;
+
 
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://heroku_g7hs7ps3:Selobo89@ds163680.mlab.com:63680/heroku_g7hs7ps3";
 // var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/test";
 
-mongoose.connect( MONGODB_URI);
-
-var db = mongoose.connection;
-
-db.on("error", function(error) {
-	console.log("Mongoose Error: ", error);
-});
-
-db.once("open", function() {
-	console.log("Mongoose connection successful.");
+mongoose.Promise = Promise;
+mongoose.connect(MONGODB_URI, {
+ useMongoClient: true
 });
 
 
-var app = express();
-var port = process.env.PORT || 3000;
+
+// var db = mongoose.connection;
+
+// db.on("error", function(error) {
+// 	console.log("Mongoose Error: ", error);
+// });
+
+// db.once("open", function() {
+// 	console.log("Mongoose connection successful.");
+// });
+
 
 // app set-ups
 
@@ -42,9 +48,6 @@ app.use(method("_method"));
 app.engine("handlebars", exphbs({defaultLayout: "main"}));
 app.set("view engine", "handlebars");
 
-app.listen(port, function() {
-	console.log("Listening on port " + port);
-})
 
 // Routes
 
@@ -156,4 +159,8 @@ app.get("/note/:id", function(req, res) {
 	Article.findById(id).populate("note").exec(function(err, data) {
 		res.send(data.note);
 	})
+})
+
+app.listen(port, function() {
+	console.log("Listening on port " + port);
 })
