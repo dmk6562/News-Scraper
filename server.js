@@ -15,18 +15,21 @@ var Note = require("./models/Note");
 var Article = require("./models/Article");
 
 // var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
-// var MONGODB_URI = process.env.MONGODB_URI || "mongodb://heroku_g7hs7ps3:Selobo89@ds163680.mlab.com:63680/heroku_g7hs7ps3";
 
 
 // mongoose.Promise = Promise;
 // mongoose.connect(MONGODB_URI);
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://heroku_g7hs7ps3:Selobo89@ds163680.mlab.com:63680/heroku_g7hs7ps3";
+// var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/test";
 
-if (process.env.MONGODB_URI) {
-	mongoose.connect("mongodb://heroku_g7hs7ps3:Selobo89@ds163680.mlab.com:63680/heroku_g7hs7ps3");
-}
-else {
-	mongoose.connect("mongodb://localhost/mongoHeadlines");
-};
+mongoose.connect( MONGODB_URI);
+
+// if (process.env.MONGODB_URI) {
+// 	mongoose.connect( MONGODB_URI);
+// }
+// else {
+// 	mongoose.connect("mongodb://localhost/mongoHeadlines");
+// };
 
 // mongoose.Promise = Promise;
 var db = mongoose.connection;
